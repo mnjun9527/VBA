@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- 使用你的 mac.css 样式表 -->
+    <link href="prism.css" rel="stylesheet" />
+    <link href="mac.css" rel="stylesheet" />
+    <script src="prism.js"></script>
+    <!-- 引入 html2canvas.js -->
+    <script src="node_modules/html2canvas/dist/html2canvas.js"></script>
+
+
+    <style>
+        /* 新增的 CSS 样式 */
+        .container {
+            display: flex;
+            justify-content: center;
+            /* 将容器内部的内容水平居中对齐 */
+            flex-wrap: wrap;
+            /* 允许内容换行 */
+
+        }
+
+        body {
+            /* 背景渐变 */
+            background-image: linear-gradient(to bottom right,
+                    #91defe,
+                    #000000,
+                    #000000,
+                    #000000,
+                    #000000,
+                    #f9bccc);
+        }
+    </style>
+</head>
+<h1 style="color: white; text-align: center;">VBA 代码高亮</h1>
+<h3 style="color: white; text-align: center;">制作：与或非</h3>
+<div class="container">
+
+    <pre class="abc"><code style="outline: none; background-color: rgba(0, 0, 0, 0);" contenteditable="true" id="left-code" class="abc">'示例代码
+Option Explicit
+#Const DebugMode = True
+Sub ExampleCode()
+    Dim myString As String
+    Const myConstant As Integer = 5
+    Dim myNumber As Integer
+
+    arr = Array("微信", "M","n", "j", "u", "n", 9, 5, 2, 7)
+    brr = [{"qq", 2, 4, 5, 1, 3, 5, 2, 4, 1}]
+
+    set rng = [A1 : A10]
+
+    num = 1 * 2 + 3 - 4 / 5.123 : num 2 = num mod 2
+    aDate = # 2024/4/9 # : myString = "Hello" : myNumber = 10
+
+    Rem 标记
+    debug.print IIf(qq = "245135241", True, False) 
+
+    str = "测试" & _
+          "换行"
+
+    If myNumber > myConstant Then
+        MsgBox myString & " World!"
+    Else
+        MsgBox "Number is not greater than constant."
+    End If
+End Sub     
+    </code>
+</pre>
+    <pre class="line-numbers"><code class="language-VBA" id="right-code" class>'示例代码
+Option Explicit
+#Const DebugMode = True
+Sub ExampleCode()
+    Dim myString As String
+    Const myConstant As Integer = 5
+    Dim myNumber As Integer
+
+    arr = Array("微信", "M","n", "j", "u", "n", 9, 5, 2, 7)
+    brr = [{"qq", 2, 4, 5, 1, 3, 5, 2, 4, 1}]
+
+    set rng = [A1 : A10]
+
+    num = 1 * 2 + 3 - 4 / 5.123 : num 2 = num mod 2
+    aDate = # 2024/4/9 # : myString = "Hello" : myNumber = 10
+
+    Rem 标记
+    debug.print IIf(qq = "245135241", True, False) 
+
+    str = "测试" & _
+          "换行"
+
+    If myNumber > myConstant Then
+        MsgBox myString & " World!"
+    Else
+        MsgBox "Number is not greater than constant."
+    End If
+End Sub
+    </code></pre>
+</div>
+
+<!-- 新添加的按钮 -->
+<button id="saveImageBtn">保存为图片</button>
+
+<script>
+    // 复制到剪切板
+    document.getElementById('saveImageBtn').addEventListener('click', function () {
+        // 获取右边窗口的内容
+        var rightContent = document.getElementById('right-code').parentElement;
+        // 删除 box-shadow 属性
+        rightContent.style.boxShadow = 'none';
+        // 使用 html2canvas 将右边窗口内容转换为图片
+        html2canvas(rightContent, {
+            backgroundColor: null, // 保留背景
+            logging: true, // 输出日志
+            allowTaint: true // 允许加载跨域的图片
+        }).then(function (canvas) {
+            // 将图片转换为 Blob 对象
+            canvas.toBlob(function (blob) {
+                // 将 Blob 对象添加到剪贴板
+                navigator.clipboard.write([
+                    new ClipboardItem({
+                        [blob.type]: blob
+                    })
+                ]).then(function () {
+                    console.log('Image copied to clipboard successfully!');
+                }, function (error) {
+                    console.error('Unable to write to clipboard. Error:', error);
+                });
+            });
+            // 恢复原来的 box-shadow 属性
+            rightContent.style.boxShadow = '0 0 30px rgba(255, 255, 255, 0.8) inset';
+        });
+    });
+
+
+</script>
+
+
+<script>
+
+    document.getElementById('left-code').addEventListener('input', function () {
+        // 获取左边窗口的内容
+        var leftContent = this.textContent;
+        // 更新右边窗口的内容
+        document.getElementById('right-code').textContent = leftContent;
+        // 刷新 Prism 样式
+        Prism.highlightElement(document.getElementById('right-code'));
+    });
+
+    //tab键
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('left-code').addEventListener('keydown', function (event) {
+            // 检查按下的键是否为 Tab 键
+            if (event.keyCode === 9) {
+                // 阻止默认行为，即不输入实际的 TAB 字符
+                event.preventDefault();
+
+                // 获取当前光标位置和文本内容
+                var selection = window.getSelection();
+                var range = selection.getRangeAt(0);
+                var cursorPosition = range.startOffset;
+                var textNode = range.startContainer;
+                var text = textNode.textContent;
+
+                // 在当前光标位置插入四个空格
+                var newText = text.substring(0, cursorPosition) + "    " + text.substring(cursorPosition);
+
+                // 更新元素的值和光标位置
+                textNode.textContent = newText;
+                range.setStart(textNode, cursorPosition + 4);
+                range.setEnd(textNode, cursorPosition + 4);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+        });
+    });
+
+
+</script>
+
+</body>
+
+</html>
