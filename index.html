@@ -7,7 +7,7 @@
     <title>Document</title>
     <!-- 使用你的 mac.css 样式表 -->
     <link href="prism.css" rel="stylesheet" />
-    <link href="mac.css" rel="stylesheet" />
+    <!-- <link href="mac.css" rel="stylesheet" /> -->
     <script src="prism.js"></script>
     <!-- 引入 html2canvas.js -->
     <script src="node_modules/html2canvas/dist/html2canvas.js"></script>
@@ -19,6 +19,11 @@
             display: flex;
             justify-content: center;
             /* 将容器内部的内容水平居中对齐 */
+        }
+
+        .containers {
+            display: flex;
+            justify-content: flex-start;
             flex-wrap: wrap;
             /* 允许内容换行 */
 
@@ -34,13 +39,77 @@
                     #000000,
                     #f9bccc);
         }
+        
+        .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            margin-top: -12px;
+            margin-bottom: 15px;
+            margin-right: 10px;
+        }
+
+        .dot2 {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            margin-top: -12px;
+            /* margin-top: -12px; */
+            margin-bottom: 15px;
+            margin-right: 10px;
+        }
+        #saveImageBtn {
+            padding: 8px 20px;
+            background-color: #ad0303;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: flex;
+        }
+
+  #saveImageBtn:hover {
+    background-color: #0056b3;
+  }
+/* macoS风格的代码框样式*/
+/* pre[class*='abc'] {
+  position: relative;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: C Jrgba(0, 0, 0, 0.2) 0px 5px 20px;
+  transition: box-shadow 0.3s ease-in-out;
+  max-height: 100%;
+  max-width: 100%;
+  padding-top: 50px;
+}
+
+pre[class*='abc']::before {
+  content: '';
+  position: absolute;
+  background: url('hld.png');
+  background-position-y: center;
+  top: 20px;
+  left: 10px;
+  height: 18px;
+  width: 80px;
+  margin-left: 5px;
+  display: block;
+} */
+
     </style>
 </head>
 <h1 style="color: white; text-align: center;">VBA 代码高亮</h1>
 <h3 style="color: white; text-align: center;">制作：与或非</h3>
+<!-- 新添加的按钮 -->
+<button id="saveImageBtn" style="margin-left: 800px;">保存图片到剪切板</button>
 <div class="container">
-
-    <pre class="abc"><code style="outline: none; background-color: rgba(0, 0, 0, 0);" contenteditable="true" id="left-code" class="abc">'示例代码
+    <pre class="abc">
+        <div class="containers" style="margin-left: 40px;">
+            <div class="dot2" style="margin-left: -25px; background-color: #FF3B30;"></div><div class="dot2" style="background-color: #FFD60A;"></div><div
+            class="dot2" style="background-color: #34C759;"></div>
+        </div><code style="outline: none; background-color: rgba(0, 0, 0, 0);" contenteditable="true" id="left-code" class="abc">'示例代码
 Option Explicit
 #Const DebugMode = True
 Sub ExampleCode()
@@ -70,7 +139,10 @@ Sub ExampleCode()
 End Sub     
     </code>
 </pre>
-    <pre class="line-numbers"><code class="language-VBA" id="right-code" class>'示例代码
+    <pre class="line-numbers">
+        <div class="containers">
+            <div class="dot" style="margin-left: -25px; background-color: #FF3B30;"></div><div class="dot" style="background-color: #FFD60A;"></div><div class="dot" style="background-color: #34C759;"></div>
+        </div><code class="language-VBA" id="right-code">'示例代码
 Option Explicit
 #Const DebugMode = True
 Sub ExampleCode()
@@ -101,10 +173,7 @@ End Sub
     </code></pre>
 </div>
 
-<!-- 新添加的按钮 -->
-<button id="saveImageBtn">保存为图片</button>
-
-<script>
+<!-- <script>
     // 复制到剪切板
     document.getElementById('saveImageBtn').addEventListener('click', function () {
         // 获取右边窗口的内容
@@ -132,11 +201,56 @@ End Sub
             });
             // 恢复原来的 box-shadow 属性
             rightContent.style.boxShadow = '0 0 30px rgba(255, 255, 255, 0.8) inset';
-        });
+        })
     });
 
 
+</script> -->
+
+<script>
+    // 复制到剪切板
+    document.getElementById('saveImageBtn').addEventListener('click', function () {
+        // 获取右边窗口的内容
+        var rightContent = document.getElementById('right-code').parentElement;
+
+        // 删除 box-shadow 属性
+        var originalBoxShadow = rightContent.style.boxShadow;
+        rightContent.style.boxShadow = 'none';
+
+        // 使用 html2canvas 将右边窗口内容转换为图片
+        html2canvas(rightContent, {
+            backgroundColor: null, // 保留背景
+            logging: true, // 输出日志
+            allowTaint: true // 允许加载跨域的图片
+        }).then(function (canvas) {
+            // 将图片转换为 Blob 对象
+            canvas.toBlob(function (blob) {
+                // 将 Blob 对象添加到剪贴板
+                if (navigator.clipboard && navigator.clipboard.write) {
+                    navigator.clipboard.write([
+                        new ClipboardItem({
+                            [blob.type]: blob
+                        })
+                    ]).then(function () {
+                        console.log('图像已成功复制到剪贴板!');
+                    }, function (error) {
+                        console.error('无法写入剪贴板。错误:', error);
+                    }).finally(function () {
+                        // 恢复原来的 box-shadow 属性
+                        rightContent.style.boxShadow = originalBoxShadow;
+                    });
+                } else {
+                    console.error('不支持剪贴板API.');
+                }
+            });
+        }).catch(function (error) {
+            console.error('html2canvas操作过程中发生错误:', error);
+            // 恢复原来的 box-shadow 属性
+            rightContent.style.boxShadow = originalBoxShadow;
+        });
+    });
 </script>
+
 
 
 <script>
