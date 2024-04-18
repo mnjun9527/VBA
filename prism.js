@@ -1624,6 +1624,7 @@ Prism.languages.clike = {
 //       });
 //     } else console.warn('Show Languages plugin loaded before Toolbar plugin.');
 // })();
+//============================
 !(function () {
   if ('undefined' != typeof Prism && 'undefined' != typeof document) {
     var n =
@@ -1706,76 +1707,61 @@ Prism.languages.clike = {
     document.body.removeChild(e);
   }
 
-  //copy按钮
-  // 'undefined' != typeof Prism &&
-  //   'undefined' != typeof document &&
-  //   (Prism.plugins.toolbar
-  //     ? Prism.plugins.toolbar.registerButton('copy-to-clipboard', function (e) {
-  //         var o = e.element,
-  //           n = (function (t) {
-  //             var e = {
-  //               copy: 'Copy',
-  //               'copy-error': 'Press Ctrl+C to copy',
-  //               'copy-success': 'Copied!',
-  //               'copy-timeout': 5e3,
-  //             };
-  //             for (var o in e) {
-  //               for (
-  //                 var n = 'data-prismjs-' + o, c = t;
-  //                 c && !c.hasAttribute(n);
 
-  //               )
-  //                 c = c.parentElement;
-  //               c && (e[o] = c.getAttribute(n));
-  //             }
-  //             return e;
-  //           })(o),
-  //           c = document.createElement('button');
-  //         (c.className = 'copy-to-clipboard-button'),
-  //           c.setAttribute('type', 'button');
-  //         var r = document.createElement('span');
-  //         return (
-  //           c.appendChild(r),
-  //           u('copy'),
-  //           (function (e, o) {
-  //             e.addEventListener('click', function () {
-  //               !(function (e) {
-  //                 navigator.clipboard
-  //                   ? navigator.clipboard
-  //                       .writeText(e.getText())
-  //                       .then(e.success, function () {
-  //                         t(e);
-  //                       })
-  //                   : t(e);
-  //               })(o);
-  //             });
-  //           })(c, {
-  //             getText: function () {
-  //               return o.textContent;
-  //             },
-  //             success: function () {
-  //               u('copy-success'), i();
-  //             },
-  //             error: function () {
-  //               u('copy-error'),
-  //                 setTimeout(function () {
-  //                   !(function (t) {
-  //                     window.getSelection().selectAllChildren(t);
-  //                   })(o);
-  //                 }, 1),
-  //                 i();
-  //             },
-  //           }),
-  //           c
-  //         );
-  //         function i() {
-  //           setTimeout(function () {
-  //             u('copy');
-  //           }, n['copy-timeout']);
-  //         }
-  //         function u(t) {
-  //           (r.textContent = n[t]), c.setAttribute('data-copy-state', t);
-  //         }
-  //       })
-  //     : console.warn('Copy to Clipboard plugin loaded before Toolbar plugin.'));
+  // 如果 Prism 已定义且 document 已定义
+  'undefined' != typeof Prism &&
+    'undefined' != typeof document &&
+    // 如果 Prism 插件中有工具栏
+    (Prism.plugins.toolbar
+      ? // 注册“复制到剪贴板”按钮
+        Prism.plugins.toolbar.registerButton('copy-to-clipboard', function (e) {
+          // 获取元素
+          var o = e.element,
+            // 国际化文本
+            n = (function (t) {
+              var e = {
+                copy: '复制',
+                'copy-error': 'Press Ctrl+C to copy',
+                'copy-success': '已复制!',
+                'copy-timeout': 5e3, // 复制成功提示持续时间
+              };
+              // 遍历获取元素上的国际化文本属性
+              // for (var o in e) {
+              //   for (
+              //     var n = 'data-prismjs-' + o, c = t;
+              //     c && !c.hasAttribute(n);
+
+              //   )
+              //     c = c.parentElement;
+              //   c && (e[o] = c.getAttribute(n));
+              // }
+              return e;
+            })(o),
+            // 创建按钮元素
+            c = document.createElement('button');
+          // 设置按钮属性和样式
+          (c.className = 'copy-to-clipboard-button'),
+            c.setAttribute('type', 'button');
+          // 创建用于显示复制状态的 span 元素
+          var r = document.createElement('span');
+          // 将 span 添加到按钮中
+          return (
+            c.appendChild(r),
+            // 绑定点击事件
+            u('copy'),
+            c
+          );
+          // 复制状态提示持续时间
+          function i() {
+            setTimeout(function () {
+              u('copy');
+            }, n['copy-timeout']);
+          }
+          // 更新按钮状态和文本
+          function u(t) {
+            (r.textContent = n[t]), c.setAttribute('data-copy-state', t);
+          }
+        })
+      : // 如果未找到工具栏插件，则发出警告
+        console.warn('Copy to Clipboard plugin loaded before Toolbar plugin.'));
 })();

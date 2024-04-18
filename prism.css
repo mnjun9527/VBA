@@ -62,7 +62,7 @@ pre[class*='abc'] {
   display: inline-block;
   /* 设置最小宽度和最小高度 */
   min-width: 150px;
-  min-height: 700px;
+  min-height: 500px;
   overflow: auto;
 }
 
@@ -326,6 +326,8 @@ div.code-toolbar > .toolbar > .toolbar-item > button {
   line-height: normal;
   overflow: visible;
   padding: 0;
+  margin-right: 30px;
+  margin-top: 30px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
